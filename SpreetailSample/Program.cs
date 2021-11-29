@@ -22,7 +22,7 @@ namespace SpreetailSample
                 if (valid)
                 {
                     //We know the command is valid now, so we can convert the call back into a key to invoke the proper function
-                    var key = (CommandEnum)Enum.Parse(typeof(CommandEnum), command[0]);
+                    var key = (CommandEnum)Enum.Parse(typeof(CommandEnum), command[0].ToUpper());
 
                     //At this point, we should be able to index the command for function calls without out-of-bounds exceptions
                     //Lets try, catch for exceptions anyway
@@ -64,6 +64,7 @@ namespace SpreetailSample
                                 process.Help();
                                 break;
                         }
+                        Console.WriteLine();
                     }
                     catch (Exception e)
                     {
