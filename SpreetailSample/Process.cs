@@ -47,12 +47,12 @@ namespace SpreetailSample
         {
             //clean the input
             input = Regex.Replace(input, @"\s+", " ");
-            var command = input.ToUpper().Split(' ');
+            var command = input.Split(' ');
 
             //Make sure the user invokes one of the valid commands
-            if (Enum.GetNames(typeof(CommandEnum)).AsEnumerable().Contains(command[0]))
+            if (Enum.GetNames(typeof(CommandEnum)).AsEnumerable().Contains(command[0].ToUpper()))
             {
-                var key = (CommandEnum) Enum.Parse(typeof(CommandEnum), command[0]);
+                var key = (CommandEnum) Enum.Parse(typeof(CommandEnum), command[0].ToUpper());
 
                 //And that it covers required arguments
                 if (_validCommands[key] == command.Length)
