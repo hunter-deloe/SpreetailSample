@@ -39,9 +39,10 @@ namespace SpreetailSample
 
         #region PUBLIC METHODS
         /// <summary>
-        /// Validates the command and arguments
+        /// Validates the command and argument count
         /// </summary>
-        /// <param name="input">User command</param>
+        /// <param name="input">User input</param>
+        /// <returns>Bool for validity, split list of command and arguments</returns>
         public (bool, string[]) IsValid(string input)
         {
             //clean the input

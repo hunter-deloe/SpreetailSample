@@ -16,6 +16,7 @@ namespace SpreetailSample
                 Console.Write("> ");
 
                 var input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input)) continue;
 
                 var (valid, command) = process.IsValid(input);
                 if (valid)
