@@ -33,7 +33,8 @@ namespace SpreetailSample
             [CommandEnum.MEMBEREXISTS] = 3,
             [CommandEnum.ALLMEMBERS] = 1,
             [CommandEnum.ITEMS] = 1,
-            [CommandEnum.HELP] = 1
+            [CommandEnum.HELP] = 1,
+            [CommandEnum.CLS] = 1
         };
 
         /// <summary>
@@ -51,21 +52,22 @@ namespace SpreetailSample
             [CommandEnum.MEMBEREXISTS] = new Action<string, string>(MemberExists),
             [CommandEnum.ALLMEMBERS] = new Action(GetAllMembers),
             [CommandEnum.ITEMS] = new Action(GetItems),
-            [CommandEnum.HELP] = new Action(Help)
+            [CommandEnum.HELP] = new Action(Help),
+            [CommandEnum.CLS] =  new Action(Console.Clear)
         };
         #endregion
 
         #region PUBLIC METHODS
         /// <summary>
-        /// Validates the command and argument count
+        /// Converts the input into a command and arguments
         /// </summary>
         /// <param name="input">User input</param>
-        /// <returns>Bool for validity, split list of command and arguments</returns>
-        public (bool, string[]) IsValid(string input)
+        /// <returns>Bool for validity, command enum, command args</returns>
+        public (bool, CommandEnum?, string[]?) ConvertInput(string input)
         {
             //clean the input
             input = Regex.Replace(input, @"\s+", " ");
-            var command = input.Split(' ');
+            var command = input.Trim().Split(' ');
 
             //Make sure the user invokes one of the valid commands
             if (Enum.GetNames(typeof(CommandEnum)).AsEnumerable().Contains(command[0].ToUpper()))
@@ -75,12 +77,12 @@ namespace SpreetailSample
                 //And that it covers required arguments
                 if (_validCommands[key] == command.Length)
                 {
-                    return (true, command);
+                    return (true, key, command.Skip(1).ToArray());
                 }
             }
 
             Console.WriteLine("Please enter a valid command. Use `HELP` to view commands.");
-            return (false, command);
+            return (false, null, null);
         }
 
         /// <summary>

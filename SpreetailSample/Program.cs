@@ -18,17 +18,17 @@ namespace SpreetailSample
                 var input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input)) continue;
 
-                var (valid, command) = process.IsValid(input);
+                var (valid, cmd, cmdArgs) = process.ConvertInput(input);
                 if (valid)
                 {
-                    //We know the command is valid now, so we can convert the call back into a key to invoke the proper function
-                    var key = (CommandEnum)Enum.Parse(typeof(CommandEnum), command[0].ToUpper());
-
-                    //At this point, we should be able to index the command for function calls without out-of-bounds exceptions
-                    //Lets try, catch for exceptions anyway
+                    //Try catch in case dynamic invoke blows up for some reason
                     try
                     {
-                        process.CommandFunctions[key].DynamicInvoke(command.Skip(1).ToArray());
+                        //This exception should never be thrown
+                        if (cmd == null) throw new Exception(") Command is null");
+                        process.CommandFunctions[cmd.Value].DynamicInvoke(cmdArgs);
+
+                        //Write line to improve readability
                         Console.WriteLine();
                     }
                     catch (Exception e)

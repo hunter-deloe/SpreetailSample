@@ -21,6 +21,7 @@ namespace SpreetailSample
         MEMBEREXISTS,
         ALLMEMBERS,
         ITEMS,
-        HELP
+        HELP,
+        CLS
     }
 }
