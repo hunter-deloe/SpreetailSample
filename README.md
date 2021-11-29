@@ -18,3 +18,4 @@ Commands (also available within the application)
 | ALLMEMBERS   | returns all members                   | Does not expect any arguments     |
 | ITEMS        | returns all keys and their members    | Does not expect any arguments     |
 | HELP         | displays a list of available commands | Does not expect any arguments     |
+| CLS          | clears the console window             | Does not expect any arguments     |
