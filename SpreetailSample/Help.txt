@@ -1,0 +1,11 @@
+﻿### KEYS		displays all keys in the dictionary.		Does not expect any arguments.
+### MEMBERS		displays all members for a key.			Expects 1 argument.
+### ADD			adds a member for a given key.			Expects 2 arguments.
+### REMOVE		removes a member from a key.			Expects 2 arguments.
+### REMOVEALL		removes all members for a key.			Expects 1 argument.
+### CLEAR		removes all keys and members.			Does not expect any arguments.
+### KEYEXISTS		returns whether a key exists.			Expects 1 argument.
+### MEMBEREXISTS	returns whether a member exists.		Expects 2 arguments.
+### ALLMEMBERS		returns all members.				Does not expect any arguments.
+### ITEMS		returns all keys and their members.		Does not expect any arguments.
+### HELP		displays a list of available commands.		Does not expect any arguments.
