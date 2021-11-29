@@ -18,52 +18,17 @@ namespace SpreetailSample
                 var input = Console.ReadLine();
                 if (string.IsNullOrWhiteSpace(input)) continue;
 
-                var (valid, command) = process.IsValid(input);
+                var (valid, cmd, cmdArgs) = process.ConvertInput(input);
                 if (valid)
                 {
-                    //We know the command is valid now, so we can convert the call back into a key to invoke the proper function
-                    var key = (CommandEnum)Enum.Parse(typeof(CommandEnum), command[0].ToUpper());
-
-                    //At this point, we should be able to index the command for function calls without out-of-bounds exceptions
-                    //Lets try, catch for exceptions anyway
+                    //Try catch in case dynamic invoke blows up for some reason
                     try
                     {
-                        switch (key)
-                        {
-                            case CommandEnum.KEYS:
-                                process.GetKeys();
-                                break;
-                            case CommandEnum.MEMBERS:
-                                process.GetMembers(command[1]);
-                                break;
-                            case CommandEnum.ADD:
-                                process.Add(command[1], command[2]);
-                                break;
-                            case CommandEnum.REMOVE:
-                                process.Remove(command[1], command[2]);
-                                break;
-                            case CommandEnum.REMOVEALL:
-                                process.RemoveAll(command[1]);
-                                break;
-                            case CommandEnum.CLEAR:
-                                process.Clear();
-                                break;
-                            case CommandEnum.KEYEXISTS:
-                                process.KeyExists(command[1]);
-                                break;
-                            case CommandEnum.MEMBEREXISTS:
-                                process.MemberExists(command[1], command[2]);
-                                break;
-                            case CommandEnum.ALLMEMBERS:
-                                process.GetAllMembers();
-                                break;
-                            case CommandEnum.ITEMS:
-                                process.GetItems();
-                                break;
-                            case CommandEnum.HELP:
-                                process.Help();
-                                break;
-                        }
+                        //This exception should never be thrown
+                        if (cmd == null) throw new Exception(") Command is null");
+                        process.CommandFunctions[cmd.Value].DynamicInvoke(cmdArgs);
+
+                        //Write line to improve readability
                         Console.WriteLine();
                     }
                     catch (Exception e)
