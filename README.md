@@ -1,7 +1,7 @@
 ﻿Requires .NET Runtime 6.0.0 to run release: https://dotnet.microsoft.com/download/dotnet/6.0
 
 To build, install SDK 6.0.100 from the above link.
-You can also install Visual Studio Community here: https://visualstudio.microsoft.com/vs/community/
+Or, install visual studio community here: https://visualstudio.microsoft.com/vs/community/
 
 Commands (also available within the application)
 
