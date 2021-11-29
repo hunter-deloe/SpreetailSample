@@ -28,42 +28,7 @@ namespace SpreetailSample
                     //Lets try, catch for exceptions anyway
                     try
                     {
-                        switch (key)
-                        {
-                            case CommandEnum.KEYS:
-                                process.GetKeys();
-                                break;
-                            case CommandEnum.MEMBERS:
-                                process.GetMembers(command[1]);
-                                break;
-                            case CommandEnum.ADD:
-                                process.Add(command[1], command[2]);
-                                break;
-                            case CommandEnum.REMOVE:
-                                process.Remove(command[1], command[2]);
-                                break;
-                            case CommandEnum.REMOVEALL:
-                                process.RemoveAll(command[1]);
-                                break;
-                            case CommandEnum.CLEAR:
-                                process.Clear();
-                                break;
-                            case CommandEnum.KEYEXISTS:
-                                process.KeyExists(command[1]);
-                                break;
-                            case CommandEnum.MEMBEREXISTS:
-                                process.MemberExists(command[1], command[2]);
-                                break;
-                            case CommandEnum.ALLMEMBERS:
-                                process.GetAllMembers();
-                                break;
-                            case CommandEnum.ITEMS:
-                                process.GetItems();
-                                break;
-                            case CommandEnum.HELP:
-                                process.Help();
-                                break;
-                        }
+                        process.CommandFunctions[key].DynamicInvoke(command.Skip(1).ToArray());
                         Console.WriteLine();
                     }
                     catch (Exception e)

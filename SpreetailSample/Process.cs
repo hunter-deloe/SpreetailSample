@@ -14,9 +14,9 @@ namespace SpreetailSample
 
         #region DATA
         /// <summary>
-        /// _dictionary to hold our data
+        /// Dictionary to hold our data
         /// </summary>
-        private Dictionary<string, HashSet<string>> _dictionary { get; set; }
+        private static Dictionary<string, HashSet<string>> _dictionary { get; set; }
 
         /// <summary>
         /// Defines a command and its expected length of arguments
@@ -34,6 +34,24 @@ namespace SpreetailSample
             [CommandEnum.ALLMEMBERS] = 1,
             [CommandEnum.ITEMS] = 1,
             [CommandEnum.HELP] = 1
+        };
+
+        /// <summary>
+        /// Defines a command and its function
+        /// </summary>
+        public readonly Dictionary<CommandEnum, Delegate> CommandFunctions = new Dictionary<CommandEnum, Delegate>() 
+        {
+            [CommandEnum.KEYS] = new Action(GetKeys),
+            [CommandEnum.MEMBERS] = new Action<string>(GetMembers),
+            [CommandEnum.ADD] = new Action<string, string>(Add),
+            [CommandEnum.REMOVE] = new Action<string, string>(Remove),
+            [CommandEnum.REMOVEALL] = new Action<string>(RemoveAll),
+            [CommandEnum.CLEAR] = new Action(Clear),
+            [CommandEnum.KEYEXISTS] = new Action<string>(KeyExists),
+            [CommandEnum.MEMBEREXISTS] = new Action<string, string>(MemberExists),
+            [CommandEnum.ALLMEMBERS] = new Action(GetAllMembers),
+            [CommandEnum.ITEMS] = new Action(GetItems),
+            [CommandEnum.HELP] = new Action(Help)
         };
         #endregion
 
@@ -68,7 +86,7 @@ namespace SpreetailSample
         /// <summary>
         /// Returns all keys in the dictionary.
         /// </summary>
-        public void GetKeys()
+        public static void GetKeys()
         {
             if(_dictionary.Count == 0)
             {
@@ -90,7 +108,7 @@ namespace SpreetailSample
         /// Returns the collection of strings for the given key
         /// </summary>
         /// <param name="key"></param>
-        public void GetMembers(string key)
+        public static void GetMembers(string key)
         {
             if (!_dictionary.ContainsKey(key))
             {
@@ -110,7 +128,7 @@ namespace SpreetailSample
         /// <summary>
         /// Returns all members in the dictionary
         /// </summary>
-        public void GetAllMembers()
+        public static void GetAllMembers()
         {
             if(_dictionary.Count == 0)
             {
@@ -133,7 +151,7 @@ namespace SpreetailSample
         /// <summary>
         /// Returns all keys in the dictionary and their members
         /// </summary>
-        public void GetItems()
+        public static void GetItems()
         {
             if(_dictionary.Count == 0)
             {
@@ -157,7 +175,7 @@ namespace SpreetailSample
         /// Returns whether a key exists or not
         /// </summary>
         /// <param name="key"></param>
-        public void KeyExists(string key)
+        public static void KeyExists(string key)
         {
             Console.WriteLine($") {_dictionary.ContainsKey(key)}");
         }
@@ -167,7 +185,7 @@ namespace SpreetailSample
         /// </summary>
         /// <param name="key"></param>
         /// <param name="member"></param>
-        public void MemberExists(string key, string member)
+        public static void MemberExists(string key, string member)
         {
             if (!_dictionary.ContainsKey(key))
             {
@@ -184,7 +202,7 @@ namespace SpreetailSample
         /// </summary>
         /// <param name="key"></param>
         /// <param name="member"></param>
-        public void Remove(string key, string member)
+        public static void Remove(string key, string member)
         {
             if (!_dictionary.ContainsKey(key))
             {
@@ -211,7 +229,7 @@ namespace SpreetailSample
         /// Removes all members for a key and removes the key from the dictionary
         /// </summary>
         /// <param name="key"></param>
-        public void RemoveAll(string key)
+        public static void RemoveAll(string key)
         {
             if (!_dictionary.ContainsKey(key))
             {
@@ -227,7 +245,7 @@ namespace SpreetailSample
         /// <summary>
         /// Removes all keys and members from the dictionary
         /// </summary>
-        public void Clear()
+        public static void Clear()
         {
             _dictionary.Clear();
             Console.WriteLine(") Cleared");
@@ -238,7 +256,7 @@ namespace SpreetailSample
         /// </summary>
         /// <param name="key"></param>
         /// <param name="member"></param>
-        public void Add(string key, string member)
+        public static void Add(string key, string member)
         {
             if (!_dictionary.ContainsKey(key))
             {
@@ -261,7 +279,7 @@ namespace SpreetailSample
         /// <summary>
         /// Displays commands
         /// </summary>
-        public void Help()
+        public static void Help()
         {
             var lines = File.ReadAllLines("Help.txt");
             foreach (var line in lines)
