@@ -81,7 +81,7 @@ namespace SpreetailSample
                 }
             }
 
-            Console.WriteLine("Please enter a valid command. Use `HELP` to view commands.");
+            Console.WriteLine("Please enter a valid command. Use `HELP` to view commands.\n");
             return (false, null, null);
         }
 
