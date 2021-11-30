@@ -19,41 +19,22 @@ namespace SpreetailSample
         private static Dictionary<string, HashSet<string>> _dictionary { get; set; }
 
         /// <summary>
-        /// Defines a command and its expected length of arguments
-        /// </summary>
-        private readonly Dictionary<CommandEnum, int> _validCommands = new Dictionary<CommandEnum, int>()
-        {
-            [CommandEnum.KEYS] = 1,
-            [CommandEnum.MEMBERS] = 2,
-            [CommandEnum.ADD] = 3,
-            [CommandEnum.REMOVE] = 3,
-            [CommandEnum.REMOVEALL] = 2,
-            [CommandEnum.CLEAR] = 1,
-            [CommandEnum.KEYEXISTS] = 2,
-            [CommandEnum.MEMBEREXISTS] = 3,
-            [CommandEnum.ALLMEMBERS] = 1,
-            [CommandEnum.ITEMS] = 1,
-            [CommandEnum.HELP] = 1,
-            [CommandEnum.CLS] = 1
-        };
-
-        /// <summary>
         /// Defines a command and its function
         /// </summary>
-        public readonly Dictionary<CommandEnum, Delegate> CommandFunctions = new Dictionary<CommandEnum, Delegate>() 
+        public readonly Dictionary<CommandEnum, Action<string[]>> CommandFunctions = new Dictionary<CommandEnum, Action<string[]>>() 
         {
-            [CommandEnum.KEYS] = new Action(GetKeys),
-            [CommandEnum.MEMBERS] = new Action<string>(GetMembers),
-            [CommandEnum.ADD] = new Action<string, string>(Add),
-            [CommandEnum.REMOVE] = new Action<string, string>(Remove),
-            [CommandEnum.REMOVEALL] = new Action<string>(RemoveAll),
-            [CommandEnum.CLEAR] = new Action(Clear),
-            [CommandEnum.KEYEXISTS] = new Action<string>(KeyExists),
-            [CommandEnum.MEMBEREXISTS] = new Action<string, string>(MemberExists),
-            [CommandEnum.ALLMEMBERS] = new Action(GetAllMembers),
-            [CommandEnum.ITEMS] = new Action(GetItems),
-            [CommandEnum.HELP] = new Action(Help),
-            [CommandEnum.CLS] =  new Action(Console.Clear)
+            [CommandEnum.KEYS] = new Action<string[]>(GetKeys),
+            [CommandEnum.MEMBERS] = new Action<string[]>(GetMembers),
+            [CommandEnum.ADD] = new Action<string[]>(Add),
+            [CommandEnum.REMOVE] = new Action<string[]>(Remove),
+            [CommandEnum.REMOVEALL] = new Action<string[]>(RemoveAll),
+            [CommandEnum.CLEAR] = new Action<string[]>(Clear),
+            [CommandEnum.KEYEXISTS] = new Action<string[]>(KeyExists),
+            [CommandEnum.MEMBEREXISTS] = new Action<string[]>(MemberExists),
+            [CommandEnum.ALLMEMBERS] = new Action<string[]>(GetAllMembers),
+            [CommandEnum.ITEMS] = new Action<string[]>(GetItems),
+            [CommandEnum.HELP] = new Action<string[]>(Help),
+            [CommandEnum.CLS] =  new Action<string[]>(ClearConsole)
         };
         #endregion
 
@@ -73,23 +54,24 @@ namespace SpreetailSample
             if (Enum.GetNames(typeof(CommandEnum)).AsEnumerable().Contains(command[0].ToUpper()))
             {
                 var key = (CommandEnum) Enum.Parse(typeof(CommandEnum), command[0].ToUpper());
-
-                //And that it covers required arguments
-                if (_validCommands[key] == command.Length)
-                {
-                    return (true, key, command.Skip(1).ToArray());
-                }
+                return (true, key, command.Skip(1).ToArray());
             }
 
-            Console.WriteLine("Please enter a valid command. Use `HELP` to view commands.\n");
+            Console.WriteLine("- Please enter a valid command. Use `HELP` to view commands.\n");
             return (false, null, null);
         }
 
         /// <summary>
         /// Returns all keys in the dictionary.
         /// </summary>
-        public static void GetKeys()
+        public static void GetKeys(string[] args)
         {
+            if(args.Length != 0)
+            {
+                Console.WriteLine("- KEYS should not be invoked with an argument.");
+                return;
+            }
+
             if(_dictionary.Count == 0)
             {
                 Console.WriteLine("(empty set)");
@@ -103,15 +85,22 @@ namespace SpreetailSample
                     i++;
                 }
             }
-
         }
 
         /// <summary>
         /// Returns the collection of strings for the given key
         /// </summary>
         /// <param name="key"></param>
-        public static void GetMembers(string key)
+        public static void GetMembers(string[] args)
         {
+            if(args.Length != 1)
+            {
+                Console.WriteLine("- MEMBERS must be invoked with 1 argument. Ex: MEMBERS foo");
+                return;
+            }
+
+            var key = args[0];
+
             if (!_dictionary.ContainsKey(key))
             {
                 Console.WriteLine(") ERROR, key does not exist");
@@ -130,8 +119,14 @@ namespace SpreetailSample
         /// <summary>
         /// Returns all members in the dictionary
         /// </summary>
-        public static void GetAllMembers()
+        public static void GetAllMembers(string[] args)
         {
+            if(args.Length != 0)
+            {
+                Console.WriteLine("- ALLMEMBERS should not be invoked with an argument");
+                return;
+            }
+
             if(_dictionary.Count == 0)
             {
                 Console.WriteLine("(empty set)");
@@ -153,8 +148,14 @@ namespace SpreetailSample
         /// <summary>
         /// Returns all keys in the dictionary and their members
         /// </summary>
-        public static void GetItems()
+        public static void GetItems(string[] args)
         {
+            if(args.Length != 0)
+            {
+                Console.WriteLine("- ITEMS should not be invoked with an argument");
+                return;
+            }
+
             if(_dictionary.Count == 0)
             {
                 Console.WriteLine("(empty set)");
@@ -177,9 +178,15 @@ namespace SpreetailSample
         /// Returns whether a key exists or not
         /// </summary>
         /// <param name="key"></param>
-        public static void KeyExists(string key)
+        public static void KeyExists(string[] args)
         {
-            Console.WriteLine($") {_dictionary.ContainsKey(key)}");
+            if(args.Length != 1)
+            {
+                Console.WriteLine("- KEYEXISTS should be invoked with 1 argument. Ex: KEYEXISTS foo");
+                return;
+            }
+
+            Console.WriteLine($") {_dictionary.ContainsKey(args[0])}");
         }
 
         /// <summary>
@@ -187,8 +194,17 @@ namespace SpreetailSample
         /// </summary>
         /// <param name="key"></param>
         /// <param name="member"></param>
-        public static void MemberExists(string key, string member)
+        public static void MemberExists(string[] args)
         {
+            if(args.Length != 2)
+            {
+                Console.WriteLine("- MEMBEREXISTS should be invoked with 2 arguments. Ex: MEMBEREXISTS foo bar");
+                return;
+            }
+
+            var key = args[0];
+            var member = args[1];
+
             if (!_dictionary.ContainsKey(key))
             {
                 Console.WriteLine(") false");
@@ -204,8 +220,17 @@ namespace SpreetailSample
         /// </summary>
         /// <param name="key"></param>
         /// <param name="member"></param>
-        public static void Remove(string key, string member)
+        public static void Remove(string[] args)
         {
+            if(args.Length != 2)
+            {
+                Console.WriteLine("- REMOVE must be invoked with 2 arguments. Ex: REMOVE foo bar");
+                return;
+            }
+
+            var key = args[0];
+            var member = args[1];
+
             if (!_dictionary.ContainsKey(key))
             {
                 Console.WriteLine(") ERROR, key does not exist");
@@ -231,8 +256,16 @@ namespace SpreetailSample
         /// Removes all members for a key and removes the key from the dictionary
         /// </summary>
         /// <param name="key"></param>
-        public static void RemoveAll(string key)
+        public static void RemoveAll(string[] args)
         {
+            if (args.Length != 1)
+            {
+                Console.WriteLine("- REMOVEALL must be invoked with 1 argument. Ex: REMOVEALL foo");
+                return;
+            }
+
+            var key = args[0];
+
             if (!_dictionary.ContainsKey(key))
             {
                 Console.WriteLine(") ERROR, key does not exist");
@@ -247,8 +280,14 @@ namespace SpreetailSample
         /// <summary>
         /// Removes all keys and members from the dictionary
         /// </summary>
-        public static void Clear()
+        public static void Clear(string[] args)
         {
+            if(args.Length != 0)
+            {
+                Console.WriteLine("- CLEAR should not be invoked with an argument.");
+                return;
+            }
+
             _dictionary.Clear();
             Console.WriteLine(") Cleared");
         }
@@ -258,8 +297,17 @@ namespace SpreetailSample
         /// </summary>
         /// <param name="key"></param>
         /// <param name="member"></param>
-        public static void Add(string key, string member)
+        public static void Add(string[] args)
         {
+            if(args.Length != 2)
+            {
+                Console.WriteLine("- ADD should be invoked with 2 arguments. Ex: ADD foo bar");
+                return;
+            }
+
+            var key = args[0];
+            var member = args[1];
+
             if (!_dictionary.ContainsKey(key))
             {
                 _dictionary.Add(key, new HashSet<string>() { member });
@@ -279,15 +327,37 @@ namespace SpreetailSample
         }
 
         /// <summary>
-        /// Displays commands
+        /// Display help
         /// </summary>
-        public static void Help()
+        /// <param name="args"></param>
+        public static void Help(string[] args)
         {
+            if (args.Length != 0) 
+            { 
+                Console.WriteLine("- HELP should not be invoked with an argument.");
+                return;
+            }
+
             var lines = File.ReadAllLines("Help.txt");
             foreach (var line in lines)
             {
                 Console.WriteLine(line);
             }
+        }
+
+        /// <summary>
+        /// Clear console
+        /// </summary>
+        /// <param name="args"></param>
+        public static void ClearConsole(string[] args)
+        {
+            if (args.Length != 0) 
+            { 
+                Console.WriteLine("- CLS should not be invoked with an argument.");
+                return;
+            }
+
+            Console.Clear();
         }
         #endregion
     }
