@@ -26,7 +26,7 @@ namespace SpreetailSample
                     {
                         //This exception should never be thrown
                         if (cmd == null) throw new Exception(") Command is null");
-                        process.CommandFunctions[cmd.Value].DynamicInvoke(cmdArgs);
+                        process.CommandFunctions[cmd.Value].DynamicInvoke((object)cmdArgs);
 
                         //Write line to improve readability
                         Console.WriteLine();
